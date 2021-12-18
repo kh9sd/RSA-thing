@@ -1,68 +1,89 @@
 import math
+# yes yes yes i know these functions have probably been implemented in some
+# python library in C by some pro 10x more experienced than me but lemme have some fun
 
 
 def gcf(a, b):
-    if (a % b == 0):
+    """Implements the Euclidean Algorithm to find the greatest
+    common divisor of two numbers
+
+    Parameters:
+        a: natural number
+        b: natural number
+
+    Returns a natural number, the GCD of a and b
+    """
+    if a % b == 0:
         return b
     return gcf(b, a % b)
 
 
 # Precondition: b1, b2, and b3 are all relatively prime to each other
 # resArray and baseArray have same num of elements
-def chineseRemThrm(resArray, baseArray):
+def chinese_rem_thrm(res_array, base_array):
+    """Implements the Chinese Remainder Theorem on a list of
+    residues and a list of modular bases, returns the least residue
+
+    Parameters:
+        res_array: list of natural numbers
+        base_array: list of natural numbers
+
+    Returns a natural number
+    """
+    if len(res_array) != len(base_array):
+        raise ValueError("Inputted lists are not the same length")
+
     total = 0
+    base_product = math.prod(base_array)
 
-    bProduct = 1
-    for x in baseArray:
-        bProduct *= x
+    for res, base in zip(res_array, base_array):
+        other_base_prod = base_product//base
+        mod_inv = modular_inv(other_base_prod, base)
+        total += res * other_base_prod * mod_inv
 
-    for i in range(len(resArray)):
-        otherBP = bProduct // baseArray[i]
-        modInv = modularInv(otherBP, baseArray[i])
-        print("{}*{}*{}".format(resArray[i], otherBP, modInv))
-        total += resArray[i] * otherBP * modInv
-
-    print("Final output is " + str(total))
+    return total % base_product
 
 
-# Precondition: a and b are relatively prime
-# finds a^-1 congruent to 1 mod b
-def modularInv(a, b):
-    x, __ = ExtEucAlg(a, b)
-    return x
+def modular_inv(a, b):
+    """
+    Finds the modular inverse of a mod b. If a and b aren't relatively prime,
+    throws a ValueError
+
+    Parameters:
+        a: natural number, number we want to find the modular inverse of
+        b: natural number, value of the modular base
+
+    Returns a^-1 (mod b), a natural number
+    """
+    if gcf(a, b) == 1:
+        x, __ = ext_euc_alg(a, b)
+        return x % b  # makes sure its positive
+    else:
+        raise ValueError("Numbers are not relatively prime for modular inverse")
 
 
-def ExtEucAlg(a, b):
-    # if the two numbers are the same, otherwise the thing breaks
-    if (a == b):
-        return (1, 0)
+def ext_euc_alg(a, b):
+    """
+    Implements Extended Euclidean Algorithm to get linear combination of
+    a and b, such that am+bn = gcd(a,b)
+
+    Parameters:
+        a: natural number
+        b: natural number
+
+    Returns m,n tuple
+    """
     # we want a to be greater than b
-    if (a < b):
-        x, y = ExtEucAlg(b, a)
+    if a < b:
+        x, y = ext_euc_alg(b, a)
         return y, x
 
-    # form is am + bn = a%b
-    m = 1
-    n = -1 * ((a - a % b) // b)
-
     # base case
-    if (b % (a % b) == 0):
-        return m, n
+    if a % b == 0:
+        return 0, 1
     else:
-        x, y = ExtEucAlg(b, a % b)  # recursion on equation bm + a%bn = ~~~
+        # form is am + bn = a%b
+        m = 1
+        n = -1 * ((a - a % b) // b)
+        x, y = ext_euc_alg(b, a % b)  # recursion on equation bm + a%bn = ~~~
         return (m * y), (n * y + x)  # this basically just does substitution
-
-
-a = 17
-b = 23
-x, y = modularInv(a, b)
-
-primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
-
-resArray = [3, 4, 78]
-baseArray = [41, 5, 79]
-
-chineseRemThrm(resArray, baseArray)
-# print("modular inverse of {} base {} is {}".format(a,b,test))
-# print("{} times {} plus {} times {} equals {}".format(a, x, b, y, gcf(a,b)))
-
