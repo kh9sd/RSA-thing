@@ -28,6 +28,24 @@ class MathTests(unittest.TestCase):
                                                                [11, 13, 5]),
                                 675)
 
+    def test_binary_list(self):
+        self.assertEqual(num_to_binary_list(19), [1, 0, 0, 1, 1])
+        self.assertEqual(num_to_binary_list(123), [1, 1, 1, 1, 0, 1, 1])
+        self.assertEqual(num_to_binary_list(32), [1, 0, 0, 0, 0, 0])
+        self.assertEqual(num_to_binary_list(31), [1, 1, 1, 1, 1])
+        self.assertEqual(num_to_binary_list(1), [1])
+
+    def test_mod_expo(self):
+        self.assertEqual(mod_expo(11,3,19), 1)
+        self.assertEqual(mod_expo(11, 1, 19), 11)
+        self.assertEqual(mod_expo(11, 2, 19), 7)
+        self.assertEqual(mod_expo(11, 4, 19), 11)
+        self.assertEqual(mod_expo(72, 84, 64), 0)
+        self.assertEqual(mod_expo(73, 84, 64), 33)
+        self.assertEqual(mod_expo(71, 84, 64), 33)
+        self.assertEqual(mod_expo(19, 24, 34), 1)
+
+
 
 if __name__ == '__main__':
     unittest.main()
