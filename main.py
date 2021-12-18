@@ -1,4 +1,5 @@
-import personal_math
+from personal_math import modular_inv, mod_expo
+import random
 
 primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
           71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149,
@@ -13,5 +14,38 @@ primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67
           857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947,
           953, 967, 971, 977, 983, 991, 997]
 
+
+def generate_RSA_keypairs(prime_pair):
+    """
+    generates the keypairs of RSA using two primes
+
+    Parameters:
+        prime_pair: list of two primes
+
+    Returns tuple of public key, which is a tuple, and priavte, which is an int
+    """
+    p, q = tuple(prime_pair)
+    n = p * q
+    totient_n = (p - 1) * (q - 1)
+    e = 65537  # lol idk wikipedia says so
+    d = modular_inv(e, totient_n)
+
+    public = n, e
+    private = d
+    return public, private
+
+
 if __name__ == '__main__':
-    pass
+    pub_key, priv_key = generate_RSA_keypairs(random.sample(primes, 2))
+    print("Now broadcasting public key:", pub_key)
+
+    message = int(input("What number would you like to encrypt?\n"))
+    n, e = pub_key
+
+    encrypted = mod_expo(message, e, n)
+    print("Your encrypted message is:", encrypted)
+
+    decrypted = mod_expo(encrypted, priv_key, n)
+    print("Your decrypted message is:", decrypted)
+
+
