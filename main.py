@@ -37,13 +37,14 @@ def generate_RSA_keypairs(prime_pair):
 
 if __name__ == '__main__':
     pub_key, priv_key = generate_RSA_keypairs(random.sample(primes, 2))
+    n, e = pub_key
     print("Now broadcasting public key:", pub_key)
 
     message = int(input("What number would you like to encrypt?\n"))
-    n, e = pub_key
 
     encrypted = mod_expo(message, e, n)
     print("Your encrypted message is:", encrypted)
+    del message  # wink
 
     decrypted = mod_expo(encrypted, priv_key, n)
     print("Your decrypted message is:", decrypted)
