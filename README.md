@@ -20,8 +20,8 @@ Basically, RSA works like this:
 
 2. we generate a private key, *d*
     - first, we need to calculate Euler's totient function (φ) on *n*
-        - since we know that *n* = *p * q*, *φ(n)* is just *(p-1)(q-1)*
-        - now, we find *d*, which is the modular inverse of *e (mod φ(n))*
+        - since we know that *n* = *p * q*, φ(*n*) is just *(p-1)(q-1)*
+        - now, we find *d*, which is the modular inverse of *e (mod* φ(*n*)*)*
             - because *e* is prime, we know that a modular inverse exists
 
 Now, we encrypt a message by converting it to a number, call it *m*, and then 
@@ -44,28 +44,29 @@ all we get is random gibberish numbers translating to random gibberish messages
 which isn't helpful.
 
 To get *d*, we need *e* and *φ(n)*. *e* is avaliable for free through the public key, 
-and so is *n*, but to actually get *φ(n)* is a different story
+and so is *n*, but to actually get φ(*n*) is a different story
 
-*φ(n)* is Euler's totient function which is the number of positive integers below *n* that are 
-relatively prime to *n*. In other words, if we just have *n* to find *φ(n)* we have to go through
+φ(*n*) is Euler's totient function which is the number of positive integers below *n* that are 
+relatively prime to *n*. In other words, if we just have *n* to find φ(*n*)we have to go through
 every number below *n*, and check if they are relatively prime. 
 
 This sounds doable but with our assumption that *p* and *q* are massive, 
 *n* is going to be MASSIVE MASSIVE. There is no person or computer that can 
 go through that process in a reasonable amount of time.
 
-But, wait, we calculated *φ(n)* so easily! That's because if we know the prime factors
-of *n*, in this case *p* and *q*, we can easily calculate *φ(n)* as *(p-1)(q-1)*. So RSA is broken 
+But, wait, we calculated φ(*n*) so easily! That's because if we know the prime factors
+of *n*, in this case *p* and *q*, we can easily calculate φ(*n*) as *(p-1)(q-1)*. So RSA is broken 
 then right? We have *n*, so all we have to do is factor *n* into *p* and *q*, and BAM we have 
-*φ(n)* and then *d* and then we can decrypt all those messages.
+φ(*n*) and then *d* and then we can decrypt all those messages.
 
-Except that integer factorization is actually a really tough problem in mathematics.
+Except that [integer factorization](https://en.wikipedia.org/wiki/Integer_factorization)
+is actually a really tough problem in mathematics.
 Especially when the only factors of a number are two primes and is 
 giant in size, like *n*, once again despite the best efforts of mathematicians around the 
 world, the task takes so long that there is no person or computer that can 
 go through that process in a reasonable amount of time.
 
-So if you keep your *p*, *q*, *φ(n)*, and *d* secret, and only publish the public key, despite
+So if you keep your *p*, *q*, φ(*n*), and *d* secret, and only publish the public key, despite
 the fact that it is technically always POSSIBLE to find the decryption key from *n* and *e*, 
 there is no chance of it happening in reality due to the time needed.
 
