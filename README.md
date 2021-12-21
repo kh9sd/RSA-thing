@@ -71,50 +71,56 @@ the fact that it is technically always POSSIBLE to find the decryption key from 
 there is no chance of it happening in reality due to the time needed.
 
 Of course, human error tends to play a hand here, so if *p* and *q* aren't randomly selected
-enough or if one of those crucial numbers leaks, then a hacker can break the
+enough, if one of those crucial numbers leaks, or if you get with some BS like a 
+timing attack, then a hacker can break the
 encryption. But in theory, this is why RSA is secure.
 
 ## Why the math works
 The magic of the math behind RSA is related to modular arithmetic, especially modular
 inverses.
 
-In a pure math sense, we start with a number *m*. <br />
+To put the algorithm in a pure math sense, we start with a number *m*. <br />
 We encrypt it with *m<sup>e</sup> (mod n)*, which gives us the number *c* <br /> 
 We decrypt it with *c<sup>d</sup> (mod n)* which gives us *m* back. <br />
 In other words with substitution, 
 *(m<sup>e</sup>)<sup>d</sup>* ≡ *m<sup>ed</sup>* ≡ *m (mod n)*
 
-To see why this works, first let's consider the case where *m* and *n* are relatively prime.
+To see why this works, **first let's consider the case where *m* and *n* are relatively prime.**
 This isn't always true despite it being by far the most prevalent case for any given
 *m* and *n*, but we will prove later that RSA still holds even when
 *m* and *n* aren't relatively prime.
 
-First, we consider Euler's theorem, which is very related to Euler's totient function.
-> Euler's theorem states that if n and a are positive coprime integers, then
-> a<sup>φ(*n*)</sup> ≡ 1 (mod n), where φ(*n*) is our beloved totient function
+First, we'll use Euler's theorem, which is very related to Euler's totient function.
+> Euler's theorem states that if *n* and *a* are positive coprime integers, then
+> *a<sup>φ(*n*)</sup>* ≡ *1 (mod n)*, where φ(*n*) is our beloved Euler's totient function
 
-Notice that with this fact, we can generalize a bit of what happens if the exponent is 
+Notice that with this fact, we can generalize a bit for what happens if the exponent is 
 a multiple of φ(*n*)
 
-For instance, a<sup>2φ(*n*)</sup> is congruent to a<sup>φ(*n*)</sup> *
-a<sup>φ(*n*)</sup>. Applying Euler's theorem to these gets us 1 * 1 ≡ 1 (mod n)
+For instance, a<sup>2φ(*n*)</sup> is the same as a<sup>φ(*n*)</sup> *
+a<sup>φ(*n*)</sup>. Applying Euler's theorem to these individually gets us 1 * 1 ≡ 1 (mod n)
 This logic applies to any multiple of φ(*n*)
 
 So in a way, Euler's theorem holds for all multiples of φ(*n*). We can translate this
 into a more general statement for Euler's theorem, like so
-> if n, b, and a are positive coprime integers, then if *b* ≡ *0* *(mod* φ(*n*)*)*,
+> if *n*, *b*, and *a* are positive integers and *n* and *a* are coprime, then if *b* ≡ *0* *(mod* φ(*n*)*)*,
 > *a<sup>b</sup>* ≡ *1 (mod n)*, where φ(*n*) is our beloved totient function
 
 Hopefully the wording isn't too confusing. All this is saying is that if *b*, our exponent,
-is divisible by φ(*n*), aka a multiple of φ(*n*), then *a<sup>b</sup>* ≡ *1 (mod n)*,
+is divisible by φ(*n*), aka *b* is a multiple of φ(*n*), then *a<sup>b</sup>* ≡ *1 (mod n)*,
 the same conclusion we came to above.
 
 Now before we actually get to how this relates to RSA, I want to just squeeze in 
 a short realization. What happens if *b* ≡ *1* *(mod* φ(*n*)*)*? Well, all this does 
-is tack on another *m* to be multiplied during the exponentiation. So if we expand
-out the equation we get *a<sup>b</sup>* ≡  *a<sup>1+hφ(*n*)</sup>* where h is
-some random integer, which is congruent to *a<sup>1</sup>* * a<sup>hφ(*n*)</sup>
-≡ *a* * 1 ≡ *a (mod n)*. Turns out all we do is multiply that extra *a* times 1, which is *a*.
+is tack on another *m* to be multiplied during the exponentiation. So all we do is 
+multiply that extra *a* times 1, which is *a*. 
+>So if *b* ≡ *1* *(mod* φ(*n*)*)*, then *a<sup>b</sup> ≡ a (mod n)*
+
+>If you want a deeper explanation, note another way we can write *b* is 1 + *h*φ(*n*) 
+> where *h* is some random integer by the definition of modular congruence. 
+> So if we expand out the equation we get *a<sup>b</sup>* ≡ *a<sup>1+hφ(n)</sup>* , 
+> which is congruent to *a<sup>1</sup>* * 
+> *a<sup>hφ(n)</sup>* ≡ *a* * 1 ≡ *a (mod n)*.
 
 Alright, now how this relates to RSA. Once we've come this far it's pretty simple.
 Recall that we found *d* to be the modular inverse of *e (mod* φ(*n*)*)*, so
