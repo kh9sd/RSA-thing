@@ -141,7 +141,7 @@ Recall that we found *d* to be the modular inverse of *e (mod* φ(*n*)*)*, so
 *m<sup>de</sup>  (mod n)*. So since *de* is our exponent, directly applying the 
 ideas we found earlier gets us that *m<sup>de</sup> ≡ m (mod n)*
 
-###Cases where *m* and *n* aren't relatively prime:
+### Cases where *m* and *n* aren't relatively prime:
 
 Alright, so in this case, either *p* or *q* divides *m*. We can break this into 2 more subcases:
 
