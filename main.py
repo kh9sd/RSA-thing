@@ -39,14 +39,19 @@ if __name__ == '__main__':
     pub_key, priv_key = generate_RSA_keypairs(random.sample(primes, 2))
     n, e = pub_key
     print("Now broadcasting public key:", pub_key)
+    while True:
+        try:
+            message = int(input("What number would you like to encrypt? Must be less than the first number in pub key\n"))
+        except ValueError:
+            print("Must be a number moron\n")
+            continue
 
-    message = int(input("What number would you like to encrypt?\n"))
+        if message < n:
+            break
 
     encrypted = mod_expo(message, e, n)
-    print("Your encrypted message is:", encrypted)
+    print("You send me your encrypted message which is", encrypted)
     del message  # wink
 
     decrypted = mod_expo(encrypted, priv_key, n)
-    print("Your decrypted message is:", decrypted)
-
-
+    print("I decode it to get back", decrypted)
