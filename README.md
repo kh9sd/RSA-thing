@@ -39,15 +39,18 @@ Now, from *c* we can actually get *m* right back just by
 First of all, RSA in practice requires that our two primes *p* and *q* be randomly choosen 
 and be MASSIVE. You'll see why soon.
 
-To get *m* from *c*, we have to know what *d* is. If we brute-force random numbers 
-all we get is random gibberish numbers translating to random gibberish messages 
-which isn't helpful.
+Now, imagine you're a hacker and want to break RSA encryption. Say you get ahold of
+*n*, *e*, and *c* which is *m<sup>e</sup> (mod n)*. It looks possible that we could
+try and find the modular root *e* of *m* to get *m*, but because how moduluses loop 
+around it turns into hell and long story short there is no efficient solution. So that approach fails.
+
+**So to get *m* from *c*, our best approach is to get what *d* is.**
 
 To get *d*, we need *e* and *φ(n)*. *e* is avaliable for free through the public key, 
 and so is *n*, but to actually get φ(*n*) is a different story
 
 φ(*n*) is Euler's totient function which is the number of positive integers below *n* that are 
-relatively prime to *n*. In other words, if we just have *n* to find φ(*n*)we have to go through
+relatively prime to *n*. In other words, if we just have *n* to find φ(*n*) we have to go through
 every number below *n*, and check if they are relatively prime. 
 
 This sounds doable but with our assumption that *p* and *q* are massive, 
@@ -73,7 +76,17 @@ there is no chance of it happening in reality due to the time needed.
 Of course, human error tends to play a hand here, so if *p* and *q* aren't randomly selected
 enough, if one of those crucial numbers leaks, or if you get with some BS like a 
 timing attack, then a hacker can break the
-encryption. But in theory, this is why RSA is secure.
+encryption. 
+
+It's also interesting to note that technically there IS a way to factor numbers efficiently, which like
+we said would break RSA. The problem is that [the process](https://en.wikipedia.org/wiki/Shor%27s_algorithm)
+needs a fucking QUANTUM computer to work. So it doesn't work on any real computer in
+use today. With quantum computing being the absolute cutting edge of research right now and the largest
+number successfully factored with that algorithm being 15 as of December 2021, RSA is still safe. But 
+yeah, if quantum computing continue to develop successfully, eventually
+RSA will be broken.
+
+But in theory, this is why RSA is secure (for now).
 
 ## Why the math works
 The magic of the math behind RSA is related to modular arithmetic, especially modular
@@ -98,7 +111,7 @@ Notice that with this fact, we can generalize a bit for what happens if the expo
 a multiple of φ(*n*)
 
 For instance, a<sup>2φ(*n*)</sup> is the same as a<sup>φ(*n*)</sup> *
-a<sup>φ(*n*)</sup>. Applying Euler's theorem to these individually gets us 1 * 1 ≡ 1 (mod n)
+a<sup>φ(*n*)</sup>. Applying Euler's theorem to these individually gets us *1 * 1* ≡ *1* (mod n)
 This logic applies to any multiple of φ(*n*)
 
 So in a way, Euler's theorem holds for all multiples of φ(*n*). We can translate this
@@ -120,12 +133,40 @@ multiply that extra *a* times 1, which is *a*.
 > where *h* is some random integer by the definition of modular congruence. 
 > So if we expand out the equation we get *a<sup>b</sup>* ≡ *a<sup>1+hφ(n)</sup>* , 
 > which is congruent to *a<sup>1</sup>* * 
-> *a<sup>hφ(n)</sup>* ≡ *a* * 1 ≡ *a (mod n)*.
+> *a<sup>hφ(n)</sup>* ≡ *a * 1* ≡ *a (mod n)*.
 
 Alright, now how this relates to RSA. Once we've come this far it's pretty simple.
 Recall that we found *d* to be the modular inverse of *e (mod* φ(*n*)*)*, so
-*de* ≡ 1 *(mod* φ(*n*)*)*. And we have our context that we are calculating
+*de* ≡ *1 (mod* φ(*n*)*)*. And we have our context that we are calculating
 *m<sup>de</sup>  (mod n)*. So since *de* is our exponent, directly applying the 
 ideas we found earlier gets us that *m<sup>de</sup> ≡ m (mod n)*
 
-TODO: when m and n aren't relatively prime
+###Cases where *m* and *n* aren't relatively prime:
+
+Alright, so in this case, either *p* or *q* divides *m*. We can break this into 2 more subcases:
+
+**Both *p* and *q* divide *m***:
+
+This means that *n* divides *m*, because *n* = *pq*. In other words, *m* ≡ *0 (mod n)*. Hopefully you can
+see that raising *m* to the *e*-th power just gives us *m*<sup>*e*</sup> ≡ *0 (mod n)* again. The same
+applies to *m*<sup>*de*</sup>, so *m*<sup>*de*</sup> ≡ *0* ≡ *m (mod n)*, exactly what we want.
+
+**Only one of *p* or *q* divides m**:
+
+Let's just assume without loss of generality that *p* divides *m* and *q* doesn't, since the reverse proof in the 
+case that *m* divides and *p* doesn't would be exactly the same. Our basic proof idea here will to be to show that
+*m*<sup>*de*</sup> ≡ *m (mod p)* and *m*<sup>*de*</sup> ≡ *m (mod q)* hold, which implies our
+result *m*<sup>*de*</sup> ≡ *m (mod n)*
+
+So we have *m* ≡ *0 (mod p)* and *m* /≡ *0 (mod q)* <sup>(that weird /≡ means not congruent to, idk how to use the actual
+symbol)</sup>. Note here that we have that *m* is relatively prime to *q*. Sounds familiar? We already proved that RSA holds
+for *m* and *n* if they are relatively prime. As it turns out, this logic extends to this case as well. So we already have that
+*m*<sup>*de*</sup> ≡ *m (mod q)*
+
+So now that all we need is to prove the case where *p* divides *m*. Once again, sound familiar? Yup, this our logic for when
+*n* divides *m* holds here as well. So we get *m*<sup>*de*</sup> ≡ *0* ≡ *m (mod p)*, and all together we have 
+*m*<sup>*de*</sup> ≡ *m (mod n)* for all cases. 
+
+## Final thoughts
+It's honestly amazing how the math all checks out AND the encryption is tough to break. Holy fuck.
+Yeah that's all, how did they come up with this.
