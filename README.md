@@ -4,7 +4,7 @@ Hopefully y'all are rational enough to understand that this is just for
 exploration purposes and shouldn't actually used in any way.
 
 ## What is RSA
-RSA is a cryptosystem that allows anybody to encrypt messages using a publically 
+RSA is a cryptosystem that allows anybody to encrypt messages using a publicly 
 avaliable key but can only be DECRYPTED by the key's publisher with a private key
 
 The exact algorithm is detailed at [this wikipedia link](https://simple.wikipedia.org/wiki/RSA_algorithm)
@@ -80,13 +80,13 @@ encryption.
 
 It's also interesting to note that technically there IS a way to factor numbers efficiently, which like
 we said would break RSA. The problem is that [the process](https://en.wikipedia.org/wiki/Shor%27s_algorithm)
-needs a fucking QUANTUM computer to work. So it doesn't work on any real computer in
+needs a fucking QUANTUM computer. So it doesn't work on any real computer in
 use today. With quantum computing being the absolute cutting edge of research right now and the largest
 number successfully factored with that algorithm being 15 as of December 2021, RSA is still safe. But 
 yeah, if quantum computing continue to develop successfully, eventually
 RSA will be broken.
 
-But in theory, this is why RSA is secure (for now).
+But in theory, this is why RSA is secure (for now)!
 
 ## Why the math works
 The magic of the math behind RSA is related to modular arithmetic, especially modular
